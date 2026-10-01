@@ -11,6 +11,10 @@
         <header class="header">
             <h1>Shapers Configuration Panel</h1>
             <p class="subtitle">Configure your shape fitting parameters</p>
+            <nav class="main-nav">
+                <button class="nav-btn active" data-page="config">Configuration</button>
+                <button class="nav-btn" data-page="error-reporting">Error Reporting</button>
+            </nav>
         </header>
 
         <div class="theme-toggle-container">
@@ -24,98 +28,199 @@
             <span class="theme-label" id="theme-label">Light Mode</span>
         </div>
 
-        <div class="config-panel">
-            <section class="config-section">
-                <h2>Circle Fitting Parameters</h2>
-                
-                <div class="form-group">
-                    <label for="method">Fitting Method</label>
-                    <select id="method" name="method">
-                        <option value="taubin_svd">Taubin SVD</option>
-                        <option value="geometrical">Geometrical</option>
-                        <option value="lsq">Least Squares (LSQ)</option>
-                    </select>
+        <!-- Configuration Page -->
+        <div id="config-page" class="page-content active">
+            <div class="config-panel">
+                <section class="config-section">
+                    <h2>Circle Fitting Parameters</h2>
+                    
+                    <div class="form-group">
+                        <label for="method">Fitting Method</label>
+                        <select id="method" name="method">
+                            <option value="taubin_svd">Taubin SVD</option>
+                            <option value="geometrical">Geometrical</option>
+                            <option value="lsq">Least Squares (LSQ)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precision">Precision</label>
+                        <input type="number" id="precision" name="precision" value="0.0001" step="0.0001" min="0">
+                        <small>Default: 1e-4</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max-iterations">Max Iterations</label>
+                        <input type="number" id="max-iterations" name="max-iterations" value="100" min="1">
+                        <small>Maximum number of iterations for optimization</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="optimizer">Optimizer (for LSQ)</label>
+                        <select id="optimizer" name="optimizer">
+                            <option value="lbfgs">L-BFGS</option>
+                            <option value="nelder-mead">Nelder-Mead</option>
+                            <option value="gradient-descent">Gradient Descent</option>
+                        </select>
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h2>Ellipsoid Intersection Parameters</h2>
+                    
+                    <div class="form-group">
+                        <label for="tolerance">Tolerance</label>
+                        <input type="number" id="tolerance" name="tolerance" value="0.000001" step="0.000001" min="0">
+                        <small>Default: 1e-6</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ellipsoid-max-iters">Max Iterations</label>
+                        <input type="number" id="ellipsoid-max-iters" name="ellipsoid-max-iters" value="100" min="1">
+                        <small>Maximum iterations for intersection check</small>
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h2>Database Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label for="db-host">Host</label>
+                        <input type="text" id="db-host" name="db-host" value="localhost" placeholder="localhost">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="db-port">Port</label>
+                        <input type="number" id="db-port" name="db-port" value="5432" min="1" max="65535">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="db-name">Database Name</label>
+                        <input type="text" id="db-name" name="db-name" value="postgres" placeholder="postgres">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="db-user">User</label>
+                        <input type="text" id="db-user" name="db-user" value="postgres" placeholder="postgres">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="db-password">Password</label>
+                        <input type="password" id="db-password" name="db-password" placeholder="Enter password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pool-size">Connection Pool Size</label>
+                        <input type="number" id="pool-size" name="pool-size" value="16" min="1" max="100">
+                    </div>
+                </section>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="save-config">Save Configuration</button>
+                    <button class="btn btn-secondary" id="reset-config">Reset to Defaults</button>
+                    <button class="btn btn-secondary" id="export-config">Export Config</button>
                 </div>
 
-                <div class="form-group">
-                    <label for="precision">Precision</label>
-                    <input type="number" id="precision" name="precision" value="0.0001" step="0.0001" min="0">
-                    <small>Default: 1e-4</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="max-iterations">Max Iterations</label>
-                    <input type="number" id="max-iterations" name="max-iterations" value="100" min="1">
-                    <small>Maximum number of iterations for optimization</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="optimizer">Optimizer (for LSQ)</label>
-                    <select id="optimizer" name="optimizer">
-                        <option value="lbfgs">L-BFGS</option>
-                        <option value="nelder-mead">Nelder-Mead</option>
-                        <option value="gradient-descent">Gradient Descent</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="config-section">
-                <h2>Ellipsoid Intersection Parameters</h2>
-                
-                <div class="form-group">
-                    <label for="tolerance">Tolerance</label>
-                    <input type="number" id="tolerance" name="tolerance" value="0.000001" step="0.000001" min="0">
-                    <small>Default: 1e-6</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="ellipsoid-max-iters">Max Iterations</label>
-                    <input type="number" id="ellipsoid-max-iters" name="ellipsoid-max-iters" value="100" min="1">
-                    <small>Maximum iterations for intersection check</small>
-                </div>
-            </section>
-
-            <section class="config-section">
-                <h2>Database Configuration</h2>
-                
-                <div class="form-group">
-                    <label for="db-host">Host</label>
-                    <input type="text" id="db-host" name="db-host" value="localhost" placeholder="localhost">
-                </div>
-
-                <div class="form-group">
-                    <label for="db-port">Port</label>
-                    <input type="number" id="db-port" name="db-port" value="5432" min="1" max="65535">
-                </div>
-
-                <div class="form-group">
-                    <label for="db-name">Database Name</label>
-                    <input type="text" id="db-name" name="db-name" value="postgres" placeholder="postgres">
-                </div>
-
-                <div class="form-group">
-                    <label for="db-user">User</label>
-                    <input type="text" id="db-user" name="db-user" value="postgres" placeholder="postgres">
-                </div>
-
-                <div class="form-group">
-                    <label for="db-password">Password</label>
-                    <input type="password" id="db-password" name="db-password" placeholder="Enter password">
-                </div>
-
-                <div class="form-group">
-                    <label for="pool-size">Connection Pool Size</label>
-                    <input type="number" id="pool-size" name="pool-size" value="16" min="1" max="100">
-                </div>
-            </section>
-
-            <div class="button-group">
-                <button class="btn btn-primary" id="save-config">Save Configuration</button>
-                <button class="btn btn-secondary" id="reset-config">Reset to Defaults</button>
-                <button class="btn btn-secondary" id="export-config">Export Config</button>
+                <div class="status-message" id="status-message"></div>
             </div>
+        </div>
 
-            <div class="status-message" id="status-message"></div>
+        <!-- Error Reporting Page -->
+        <div id="error-reporting-page" class="page-content">
+            <div class="error-reporting-panel">
+                <section class="error-section">
+                    <h2>Report an Issue</h2>
+                    <p class="section-description">Help us improve by reporting issues or providing feedback</p>
+                    
+                    <form id="error-report-form" class="error-form">
+                        <div class="form-group">
+                            <label for="error-type">Issue Type</label>
+                            <select id="error-type" name="error-type" required>
+                                <option value="">Select an issue type</option>
+                                <option value="bug">Bug Report</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="feedback">General Feedback</option>
+                                <option value="performance">Performance Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="error-severity">Severity</label>
+                            <select id="error-severity" name="error-severity" required>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="error-title">Title</label>
+                            <input type="text" id="error-title" name="error-title" placeholder="Brief description of the issue" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="error-description">Description</label>
+                            <textarea id="error-description" name="error-description" placeholder="Provide detailed information about the issue" rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="error-email">Email (Optional)</label>
+                            <input type="email" id="error-email" name="error-email" placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="error-include-url" name="error-include-url" checked>
+                                Include current page URL
+                            </label>
+                            <label>
+                                <input type="checkbox" id="error-include-ua" name="error-include-ua" checked>
+                                Include browser information
+                            </label>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                            <button type="reset" class="btn btn-secondary">Clear Form</button>
+                        </div>
+
+                        <div class="status-message" id="error-status-message"></div>
+                    </form>
+                </section>
+
+                <section class="error-section">
+                    <h2>Error Reports</h2>
+                    <p class="section-description">View and manage submitted error reports</p>
+                    
+                    <div class="error-stats">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Reports</span>
+                            <span class="stat-value" id="stat-total">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">High Severity</span>
+                            <span class="stat-value" id="stat-high">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">This Session</span>
+                            <span class="stat-value" id="stat-session">0</span>
+                        </div>
+                    </div>
+
+                    <div class="error-controls">
+                        <button class="btn btn-secondary" id="refresh-errors">Refresh</button>
+                        <button class="btn btn-secondary" id="export-errors-json">Export as JSON</button>
+                        <button class="btn btn-secondary" id="export-errors-csv">Export as CSV</button>
+                        <button class="btn btn-secondary" id="clear-errors">Clear All</button>
+                    </div>
+
+                    <div id="error-list" class="error-list">
+                        <p class="empty-message">No error reports yet</p>
+                    </div>
+                </section>
+            </div>
         </div>
 
         <footer class="footer">
@@ -124,6 +229,7 @@
         </footer>
     </div>
 
+    <script src="error-reporting.js"></script>
     <script src="config-panel.js"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@
     --accent-hover: #2c5282;
     --success-color: #38a169;
     --error-color: #e53e3e;
+    --warning-color: #ed8936;
+    --info-color: #3182ce;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
@@ -29,6 +31,8 @@
     --accent-hover: #63b3ed;
     --success-color: #48bb78;
     --error-color: #fc8181;
+    --warning-color: #f6ad55;
+    --info-color: #4299e1;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
@@ -74,6 +78,38 @@ body {
 .subtitle {
     color: var(--text-secondary);
     font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Navigation */
+.main-nav {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    padding: 0.5rem 1.5rem;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    font-size: 0.95rem;
+}
+
+.nav-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.nav-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
 }
 
 /* Theme Toggle */
@@ -153,6 +189,16 @@ body {
     font-size: 1rem;
 }
 
+/* Page Content */
+.page-content {
+    display: none;
+}
+
+.page-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
 /* Config Panel */
 .config-panel {
     background-color: var(--bg-primary);
@@ -184,6 +230,51 @@ body {
     margin-right: 0.5rem;
 }
 
+/* Error Reporting Panel */
+.error-reporting-panel {
+    background-color: var(--bg-primary);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.error-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.error-section:last-of-type {
+    border-bottom: none;
+}
+
+.error-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.error-section h2::before {
+    content: "🐛";
+    margin-right: 0.5rem;
+}
+
+.section-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* Error Form */
+.error-form {
+    background-color: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
 /* Form Groups */
 .form-group {
     margin-bottom: 1.5rem;
@@ -198,22 +289,30 @@ body {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 0.75rem;
     border: 2px solid var(--border-color);
     border-radius: 8px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     color: var(--text-primary);
     font-size: 1rem;
+    font-family: inherit;
     transition: var(--transition);
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
 .form-group small {
@@ -221,6 +320,199 @@ body {
     margin-top: 0.25rem;
     color: var(--text-tertiary);
     font-size: 0.85rem;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+/* Error Statistics */
+.error-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background-color: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    border-left: 4px solid var(--accent-color);
+}
+
+.stat-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+/* Error Controls */
+.error-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.error-controls .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Error List */
+.error-list {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.error-item {
+    background-color: var(--bg-primary);
+    border-left: 4px solid var(--info-color);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.error-item:hover {
+    box-shadow: var(--shadow);
+}
+
+.error-item.severity-high {
+    border-left-color: var(--error-color);
+}
+
+.error-item.severity-critical {
+    border-left-color: var(--error-color);
+    background-color: rgba(229, 62, 62, 0.05);
+}
+
+.error-item.severity-medium {
+    border-left-color: var(--warning-color);
+}
+
+.error-item.severity-low {
+    border-left-color: var(--success-color);
+}
+
+.error-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+.error-item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.error-item-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.error-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.error-badge.type {
+    background-color: var(--info-color);
+    color: white;
+}
+
+.error-badge.severity-high {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.error-badge.severity-critical {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.error-badge.severity-medium {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.error-badge.severity-low {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.error-item-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
+
+.error-item-timestamp {
+    color: var(--text-tertiary);
+    font-size: 0.8rem;
+}
+
+.error-item-delete {
+    background: none;
+    border: none;
+    color: var(--error-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    transition: var(--transition);
+}
+
+.error-item-delete:hover {
+    transform: scale(1.2);
+}
+
+.empty-message {
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: 2rem 1rem;
+    font-style: italic;
 }
 
 /* Buttons */
@@ -293,6 +585,11 @@ body {
     color: white;
 }
 
+.status-message.info {
+    background-color: var(--info-color);
+    color: white;
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -327,7 +624,8 @@ body {
         font-size: 2rem;
     }
 
-    .config-panel {
+    .config-panel,
+    .error-reporting-panel {
         padding: 1.5rem;
     }
 
@@ -336,6 +634,27 @@ body {
     }
 
     .btn {
+        width: 100%;
+    }
+
+    .main-nav {
+        gap: 0.5rem;
+    }
+
+    .nav-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .error-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .error-controls {
+        flex-direction: column;
+    }
+
+    .error-controls .btn {
         width: 100%;
     }
 }
@@ -352,7 +671,8 @@ body {
     }
 }
 
-.config-section {
+.config-section,
+.error-section {
     animation: fadeIn 0.5s ease-out;
 }
 
