@@ -19,6 +19,8 @@ pub mod ellipsoids;
 mod aux_funcs;
 /// Module for native error types
 pub mod errors;
+/// Module for PostgreSQL database connection
+pub mod db;
 use pyo3::prelude::*;
 // extern crate blas_src;
 
