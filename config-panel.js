@@ -7,6 +7,7 @@ class ConfigPanel {
         this.initTheme();
         this.initEventListeners();
         this.loadFormValues();
+        this.initPageNavigation();
     }
 
     // Theme Management
@@ -35,6 +36,44 @@ class ConfigPanel {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         this.setTheme(newTheme);
+    }
+
+    // Page Navigation
+    initPageNavigation() {
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = e.target.dataset.page;
+                this.showPage(page);
+            });
+        });
+    }
+
+    showPage(pageName) {
+        // Hide all pages
+        const pages = document.querySelectorAll('.page-content');
+        pages.forEach(page => page.classList.remove('active'));
+
+        // Show selected page
+        const selectedPage = document.getElementById(pageName + '-page');
+        if (selectedPage) {
+            selectedPage.classList.add('active');
+        }
+
+        // Update nav buttons
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(btn => {
+            if (btn.dataset.page === pageName) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Refresh error list if showing error reporting page
+        if (pageName === 'error-reporting' && window.errorReporting) {
+            this.refreshErrorList();
+        }
     }
 
     // Configuration Management
@@ -206,6 +245,69 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         console.log('Rust Code Example:', rustCode);
     }
 
+    // Error Reporting UI Management
+    refreshErrorList() {
+        if (!window.errorReporting) return;
+
+        const errorList = document.getElementById('error-list');
+        const errors = window.errorReporting.getAllErrors();
+        const stats = window.errorReporting.getStatistics();
+
+        // Update statistics
+        document.getElementById('stat-total').textContent = stats.totalErrors;
+        document.getElementById('stat-high').textContent = stats.bySeverity['high'] || 0;
+        document.getElementById('stat-session').textContent = Math.min(stats.totalErrors, 5);
+
+        // Clear and rebuild error list
+        errorList.innerHTML = '';
+
+        if (errors.length === 0) {
+            errorList.innerHTML = '<p class="empty-message">No error reports yet</p>';
+            return;
+        }
+
+        // Display errors in reverse order (newest first)
+        errors.slice().reverse().forEach(error => {
+            const errorElement = this.createErrorElement(error);
+            errorList.appendChild(errorElement);
+        });
+    }
+
+    createErrorElement(error) {
+        const div = document.createElement('div');
+        div.className = `error-item severity-${error.severity}`;
+        
+        const timestamp = new Date(error.timestamp).toLocaleString();
+        
+        div.innerHTML = `
+            <div class="error-item-header">
+                <div class="error-item-title">${this.escapeHtml(error.title)}</div>
+                <button class="error-item-delete" data-error-id="${error.id}" title="Delete">✕</button>
+            </div>
+            <div class="error-item-meta">
+                <span class="error-badge type">${this.escapeHtml(error.type)}</span>
+                <span class="error-badge severity-${error.severity}">${error.severity}</span>
+            </div>
+            <div class="error-item-description">${this.escapeHtml(error.description)}</div>
+            <div class="error-item-timestamp">${timestamp}</div>
+        `;
+
+        // Add delete button listener
+        const deleteBtn = div.querySelector('.error-item-delete');
+        deleteBtn.addEventListener('click', () => {
+            window.errorReporting.deleteError(error.id);
+            this.refreshErrorList();
+        });
+
+        return div;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     // Event Listeners
     initEventListeners() {
         // Theme toggle
@@ -224,8 +326,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         const exportButton = document.getElementById('export-config');
         exportButton.addEventListener('click', () => this.exportConfig());
 
+        // Error reporting form
+        const errorForm = document.getElementById('error-report-form');
+        if (errorForm) {
+            errorForm.addEventListener('submit', (e) => this.handleErrorSubmit(e));
+        }
+
+        // Error reporting buttons
+        const refreshErrorsBtn = document.getElementById('refresh-errors');
+        if (refreshErrorsBtn) {
+            refreshErrorsBtn.addEventListener('click', () => this.refreshErrorList());
+        }
+
+        const exportErrorsJsonBtn = document.getElementById('export-errors-json');
+        if (exportErrorsJsonBtn) {
+            exportErrorsJsonBtn.addEventListener('click', () => {
+                if (window.errorReporting) {
+                    window.errorReporting.exportErrors();
+                    this.showErrorStatus('Error reports exported as JSON', 'success');
+                }
+            });
+        }
+
+        const exportErrorsCsvBtn = document.getElementById('export-errors-csv');
+        if (exportErrorsCsvBtn) {
+            exportErrorsCsvBtn.addEventListener('click', () => {
+                if (window.errorReporting) {
+                    window.errorReporting.exportErrorsAsCSV();
+                    this.showErrorStatus('Error reports exported as CSV', 'success');
+                }
+            });
+        }
+
+        const clearErrorsBtn = document.getElementById('clear-errors');
+        if (clearErrorsBtn) {
+            clearErrorsBtn.addEventListener('click', () => {
+                if (window.errorReporting && window.errorReporting.clearAllErrors()) {
+                    this.refreshErrorList();
+                    this.showErrorStatus('All error reports cleared', 'success');
+                }
+            });
+        }
+
         // Auto-save on input change (debounced)
-        const inputs = document.querySelectorAll('input, select');
+        const inputs = document.querySelectorAll('#config-page input, #config-page select');
         let autoSaveTimeout;
         inputs.forEach(input => {
             input.addEventListener('change', () => {
@@ -249,6 +393,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 this.toggleTheme();
             }
         });
+    }
+
+    handleErrorSubmit(e) {
+        e.preventDefault();
+
+        if (!window.errorReporting) {
+            this.showErrorStatus('Error reporting system not initialized', 'error');
+            return;
+        }
+
+        const errorType = document.getElementById('error-type').value;
+        const errorSeverity = document.getElementById('error-severity').value;
+        const errorTitle = document.getElementById('error-title').value;
+        const errorDescription = document.getElementById('error-description').value;
+        const errorEmail = document.getElementById('error-email').value;
+
+        if (!errorType || !errorTitle || !errorDescription) {
+            this.showErrorStatus('Please fill in all required fields', 'error');
+            return;
+        }
+
+        const report = window.errorReporting.submitErrorReport({
+            type: errorType,
+            title: errorTitle,
+            description: errorDescription,
+            severity: errorSeverity,
+            userEmail: errorEmail
+        });
+
+        this.showErrorStatus('Error report submitted successfully!', 'success');
+        document.getElementById('error-report-form').reset();
+        this.refreshErrorList();
+    }
+
+    showErrorStatus(message, type) {
+        const statusElement = document.getElementById('error-status-message');
+        if (statusElement) {
+            statusElement.textContent = message;
+            statusElement.className = `status-message show ${type}`;
+            
+            setTimeout(() => {
+                statusElement.classList.remove('show');
+            }, 3000);
+        }
     }
 
     // Validation
