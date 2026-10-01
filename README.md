@@ -100,4 +100,19 @@ let parameters = ellipsoids::EllipsoidIntersectionParameters::new()
 let intersection = ellipsoids::check_ellipsoid_intersection(ellipse1, ellipse2, Some(parameters));
 ```
 
+## Configuration Panel
+
+A web-based configuration panel is available for easy management of Shapers settings. The panel features:
+- 🎨 Light and Dark theme toggle
+- ⚙️ Visual configuration of all parameters
+- 💾 Persistent settings storage
+- 📤 Export/import configuration
+- ⌨️ Keyboard shortcuts
+
+To use the configuration panel, open `config-panel.html` in your web browser. See [CONFIG_PANEL.md](CONFIG_PANEL.md) for detailed documentation.
+
+## Database Connection
+
+Shapers now includes PostgreSQL database connection support with connection pooling. See [DB_CONNECTION.md](DB_CONNECTION.md) for usage examples and documentation.
+
 

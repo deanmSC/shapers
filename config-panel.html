@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shapers Configuration Panel</title>
+    <link rel="stylesheet" href="config-panel.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Shapers Configuration Panel</h1>
+            <p class="subtitle">Configure your shape fitting parameters</p>
+        </header>
+
+        <div class="theme-toggle-container">
+            <label class="theme-toggle">
+                <input type="checkbox" id="theme-toggle-checkbox" aria-label="Toggle dark mode">
+                <span class="toggle-slider">
+                    <span class="toggle-icon sun">☀️</span>
+                    <span class="toggle-icon moon">🌙</span>
+                </span>
+            </label>
+            <span class="theme-label" id="theme-label">Light Mode</span>
+        </div>
+
+        <div class="config-panel">
+            <section class="config-section">
+                <h2>Circle Fitting Parameters</h2>
+                
+                <div class="form-group">
+                    <label for="method">Fitting Method</label>
+                    <select id="method" name="method">
+                        <option value="taubin_svd">Taubin SVD</option>
+                        <option value="geometrical">Geometrical</option>
+                        <option value="lsq">Least Squares (LSQ)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="precision">Precision</label>
+                    <input type="number" id="precision" name="precision" value="0.0001" step="0.0001" min="0">
+                    <small>Default: 1e-4</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="max-iterations">Max Iterations</label>
+                    <input type="number" id="max-iterations" name="max-iterations" value="100" min="1">
+                    <small>Maximum number of iterations for optimization</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="optimizer">Optimizer (for LSQ)</label>
+                    <select id="optimizer" name="optimizer">
+                        <option value="lbfgs">L-BFGS</option>
+                        <option value="nelder-mead">Nelder-Mead</option>
+                        <option value="gradient-descent">Gradient Descent</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="config-section">
+                <h2>Ellipsoid Intersection Parameters</h2>
+                
+                <div class="form-group">
+                    <label for="tolerance">Tolerance</label>
+                    <input type="number" id="tolerance" name="tolerance" value="0.000001" step="0.000001" min="0">
+                    <small>Default: 1e-6</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="ellipsoid-max-iters">Max Iterations</label>
+                    <input type="number" id="ellipsoid-max-iters" name="ellipsoid-max-iters" value="100" min="1">
+                    <small>Maximum iterations for intersection check</small>
+                </div>
+            </section>
+
+            <section class="config-section">
+                <h2>Database Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="db-host">Host</label>
+                    <input type="text" id="db-host" name="db-host" value="localhost" placeholder="localhost">
+                </div>
+
+                <div class="form-group">
+                    <label for="db-port">Port</label>
+                    <input type="number" id="db-port" name="db-port" value="5432" min="1" max="65535">
+                </div>
+
+                <div class="form-group">
+                    <label for="db-name">Database Name</label>
+                    <input type="text" id="db-name" name="db-name" value="postgres" placeholder="postgres">
+                </div>
+
+                <div class="form-group">
+                    <label for="db-user">User</label>
+                    <input type="text" id="db-user" name="db-user" value="postgres" placeholder="postgres">
+                </div>
+
+                <div class="form-group">
+                    <label for="db-password">Password</label>
+                    <input type="password" id="db-password" name="db-password" placeholder="Enter password">
+                </div>
+
+                <div class="form-group">
+                    <label for="pool-size">Connection Pool Size</label>
+                    <input type="number" id="pool-size" name="pool-size" value="16" min="1" max="100">
+                </div>
+            </section>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="save-config">Save Configuration</button>
+                <button class="btn btn-secondary" id="reset-config">Reset to Defaults</button>
+                <button class="btn btn-secondary" id="export-config">Export Config</button>
+            </div>
+
+            <div class="status-message" id="status-message"></div>
+        </div>
+
+        <footer class="footer">
+            <p>Shapers - Fitting shapes with Rust in Python</p>
+            <p><a href="https://github.com/borgesaugusto/shapers" target="_blank">GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <script src="config-panel.js"></script>
+</body>
+</html>
