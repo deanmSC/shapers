@@ -30,3 +30,7 @@ finitediff = { version = "0.1.4", features = ["ndarray"] }
 tokio-postgres = "0.7"
 tokio = { version = "1", features = ["full"] }
 deadpool-postgres = "0.14"
+
+# Serialization for error reporting
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

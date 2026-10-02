@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
 use std::fmt;
+
 #[derive(Debug)]
 pub struct LSQError(argmin::core::Error);
 
@@ -21,6 +22,23 @@ impl From<argmin::core::Error> for LSQError {
     fn from(value: argmin::core::Error) -> Self {
         // Self(value)
         LSQError(value)
+    }
+}
+
+impl LSQError {
+    /// Get error code for database logging
+    pub fn error_code(&self) -> &'static str {
+        "LSQ_001"
+    }
+
+    /// Get error type name
+    pub fn error_type(&self) -> &'static str {
+        "LSQError"
+    }
+
+    /// Get error message
+    pub fn message(&self) -> String {
+        format!("{}", self.0)
     }
 }
 
@@ -65,5 +83,27 @@ impl From<deadpool_postgres::PoolError> for DbError {
 impl From<deadpool_postgres::CreatePoolError> for DbError {
     fn from(error: deadpool_postgres::CreatePoolError) -> Self {
         DbError::ConfigError(error.to_string())
+    }
+}
+
+impl DbError {
+    /// Get error code for database logging
+    pub fn error_code(&self) -> &'static str {
+        match self {
+            DbError::ConnectionError(_) => "DB_001",
+            DbError::QueryError(_) => "DB_002",
+            DbError::PoolError(_) => "DB_003",
+            DbError::ConfigError(_) => "DB_004",
+        }
+    }
+
+    /// Get error type name
+    pub fn error_type(&self) -> &'static str {
+        "DbError"
+    }
+
+    /// Get error message
+    pub fn message(&self) -> String {
+        self.to_string()
     }
 }
