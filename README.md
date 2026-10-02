@@ -115,4 +115,58 @@ To use the configuration panel, open `config-panel.html` in your web browser. Se
 
 Shapers now includes PostgreSQL database connection support with connection pooling. See [DB_CONNECTION.md](DB_CONNECTION.md) for usage examples and documentation.
 
+## Error Tracking
+
+Comprehensive error tracking system with PostgreSQL backend for monitoring and analyzing application errors. Features include:
+- 📊 Error categorization and severity levels
+- 📈 Occurrence tracking and statistics
+- 🔍 Metadata and context support
+- ✅ Resolution tracking
+- 📉 Aggregated statistics
+
+### Quick Start
+
+```bash
+# Run database migrations
+cd migrations
+./run_migrations.sh
+
+# Or manually
+psql -h localhost -U postgres -d postgres -f migrations/001_create_error_tracking_tables.sql
+```
+
+### Usage Example
+
+```rust
+use shapers::db::{DbConfig, DbPool};
+use shapers::error_reporting::{ErrorReporter, ErrorRecord, ErrorSeverity, ErrorCategory};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Setup database connection
+    let config = DbConfig::new()
+        .with_host("localhost")
+        .with_dbname("postgres");
+    
+    let pool = DbPool::new(config).await?;
+    let reporter = ErrorReporter::new(pool);
+    
+    // Log an error
+    let error = ErrorRecord::new(
+        "LSQ_001",
+        "LSQError",
+        "Optimization failed to converge"
+    )
+    .with_severity(ErrorSeverity::Error)
+    .with_category(ErrorCategory::CircleFitting);
+    
+    let error_id = reporter.log_error(&error).await?;
+    println!("Error logged with ID: {}", error_id);
+    
+    Ok(())
+}
+```
+
+See [ERROR_TRACKING.md](ERROR_TRACKING.md) for complete documentation and examples.
+
 

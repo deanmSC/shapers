@@ -82,6 +82,46 @@
                 </section>
 
                 <section class="config-section">
+                    <h2>Error Reporting Configuration</h2>
+                    
+                    <div class="form-group">
+                        <label for="error-tracking-enabled">Enable Error Tracking</label>
+                        <select id="error-tracking-enabled" name="error-tracking-enabled">
+                            <option value="true">Enabled</option>
+                            <option value="false">Disabled</option>
+                        </select>
+                        <small>Track errors in the database</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="error-severity-level">Minimum Severity Level</label>
+                        <select id="error-severity-level" name="error-severity-level">
+                            <option value="debug">Debug</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error" selected>Error</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                        <small>Only log errors at or above this severity</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="error-auto-resolve">Auto-resolve Errors</label>
+                        <select id="error-auto-resolve" name="error-auto-resolve">
+                            <option value="true">Enabled</option>
+                            <option value="false" selected>Disabled</option>
+                        </select>
+                        <small>Automatically resolve duplicate errors</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="error-retention-days">Error Retention (Days)</label>
+                        <input type="number" id="error-retention-days" name="error-retention-days" value="30" min="1" max="365">
+                        <small>Keep error logs for this many days</small>
+                    </div>
+                </section>
+
+                <section class="config-section">
                     <h2>Database Configuration</h2>
                     
                     <div class="form-group">

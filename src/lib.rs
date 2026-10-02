@@ -21,6 +21,8 @@ mod aux_funcs;
 pub mod errors;
 /// Module for PostgreSQL database connection
 pub mod db;
+/// Module for error reporting and tracking
+pub mod error_reporting;
 use pyo3::prelude::*;
 // extern crate blas_src;
 

@@ -89,6 +89,12 @@ class ConfigPanel {
                 tolerance: 0.000001,
                 maxIterations: 100
             },
+            errorReporting: {
+                enabled: true,
+                severityLevel: 'error',
+                autoResolve: false,
+                retentionDays: 30
+            },
             database: {
                 host: 'localhost',
                 port: 5432,
@@ -125,6 +131,12 @@ class ConfigPanel {
                 tolerance: parseFloat(document.getElementById('tolerance').value),
                 maxIterations: parseInt(document.getElementById('ellipsoid-max-iters').value)
             },
+            errorReporting: {
+                enabled: document.getElementById('error-tracking-enabled').value === 'true',
+                severityLevel: document.getElementById('error-severity-level').value,
+                autoResolve: document.getElementById('error-auto-resolve').value === 'true',
+                retentionDays: parseInt(document.getElementById('error-retention-days').value)
+            },
             database: {
                 host: document.getElementById('db-host').value,
                 port: parseInt(document.getElementById('db-port').value),
@@ -154,6 +166,14 @@ class ConfigPanel {
         // Ellipsoid Intersection
         document.getElementById('tolerance').value = this.config.ellipsoidIntersection.tolerance;
         document.getElementById('ellipsoid-max-iters').value = this.config.ellipsoidIntersection.maxIterations;
+
+        // Error Reporting
+        if (this.config.errorReporting) {
+            document.getElementById('error-tracking-enabled').value = this.config.errorReporting.enabled.toString();
+            document.getElementById('error-severity-level').value = this.config.errorReporting.severityLevel;
+            document.getElementById('error-auto-resolve').value = this.config.errorReporting.autoResolve.toString();
+            document.getElementById('error-retention-days').value = this.config.errorReporting.retentionDays;
+        }
 
         // Database
         document.getElementById('db-host').value = this.config.database.host;
